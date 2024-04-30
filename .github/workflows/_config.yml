@@ -1,0 +1,4 @@
+redirects:
+  - from: /ruta-original
+    to: /nueva-ruta
+    status: 301
