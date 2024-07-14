@@ -1,4 +1,4 @@
-<div onclick="window.location='https://cloudflare.com'" style="cursor: pointer;">
+<div style="width: 300px; height: 100px; cursor: pointer;" onclick="location.href='https://cloudflare.com'">
   <svg xmlns="http://www.w3.org/2000/svg" height="100" width="300">
     <rect fill="white" height="100" id="bg" width="300"/>
     <text dominant-baseline="middle" fill="black" font-family="Arial" font-size="24" id="text" text-anchor="middle" x="50%" y="50%">
