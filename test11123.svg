@@ -1,5 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+  <foreignObject>
+
 <svg width="200" height="200">
 <style>:target {color:red;}</style><xss id=x style="transition:color 1s" onwebkittransitionend=print`1`></xss>
   </foreignObject>
