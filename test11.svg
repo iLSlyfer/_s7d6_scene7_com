@@ -6,7 +6,7 @@
 
   <!-- Text -->
   <text id="text" x="50%" y="50%" font-family="Arial" font-size="24" fill="black" text-anchor="middle" dominant-baseline="middle">
-    Poc by slyfer
+    Poc by slyfer23
   </text>
   <style>
     /* Hover effect for the background */
