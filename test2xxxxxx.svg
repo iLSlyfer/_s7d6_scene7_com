@@ -1,12 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500">
-  <title>Mi SVG</title>
-  <desc onclick="print`1`" accesskey="x">Descripción del contenido de este SVG.</desc>
-  <foreignObject width="100%" height="100%">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
-<input> </input>
-<video></video>
-<iframe></iframe>
-<button></button>
-   </div>
-  </foreignObject>
+
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" height="100" width="300">
+  
+  <rect fill="white" height="100" id="bg" href="https://cloudflare.com" width="300"/>
+
+  
+  <text dominant-baseline="middle" fill="black" font-family="Arial" font-size="24" id="text" text-anchor="middle" href="https://cloudflare.com" x="50%" y="50%">
+    Poc by slyfer
+  </text>
+  <style>
+    /* Hover effect for the background */
+    svg:hover #bg {
+      fill: black;
+    }
+
+    /* Hover effect for the text */
+    svg:hover #text {
+      fill: white;
+    }
+  </style>
 </svg>
