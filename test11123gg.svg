@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
+  <rect width="100%" height="100%" fill="white" />
+  
+  <text x="10" y="20" font-family="Arial" font-size="16" fill="black">Nombre:</text>
+  <foreignObject x="100" y="10" width="150" height="30">
+    <input xmlns="http://www.w3.org/1999/xhtml" type="text" placeholder="Ingresa tu nombre" />
+  </foreignObject>
+
+  <text x="10" y="70" font-family="Arial" font-size="16" fill="black">Correo:</text>
+  <foreignObject x="100" y="60" width="150" height="30">
+    <input xmlns="http://www.w3.org/1999/xhtml" type="email" placeholder="Ingresa tu correo" />
+  </foreignObject>
+
+  <foreignObject x="100" y="110" width="150" height="40">
+    <button xmlns="http://www.w3.org/1999/xhtml" type="submit">Enviar</button>
+  </foreignObject>
+</svg>
