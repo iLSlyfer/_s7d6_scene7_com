@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Popup Centrado</title>
+    <script>
+        function abrirPopup() {
+            // Dimensiones del popup
+            var popupWidth = 600;
+            var popupHeight = 400;
+
+            // Dimensiones de la pantalla
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+
+            // Coordenadas para centrar el popup
+            var left = (screenWidth / 2) - (popupWidth / 2);
+            var top = (screenHeight / 2) - (popupHeight / 2);
+
+            // Abrir el popup centrado
+            window.open("https://snowflakelabs.github.io/_s7d6_scene7_com/index.html", "_blank", `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`);
+        }
+
+        // Llamar a la función cuando la página haya cargado
+        window.onload = abrirPopup;
+    </script>
+</head>
+<body>
+    <p>La página abrirá un popup automáticamente al cargar.</p>
+</body>
+</html>
