@@ -20,8 +20,8 @@
                 // Si hay un error cargando el script
                 alert("Hubo un error al cargar el script.");
             };
-            // Añadir el script al cuerpo del documento
-            document.body.appendChild(a);
+            // Añadir el script al contenedor <svg>
+            document.documentElement.appendChild(a);
         };
     </script>
 </svg>
