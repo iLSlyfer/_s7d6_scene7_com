@@ -9,7 +9,7 @@
     <!-- Script para ejecutar un alert -->
     <script type="text/javascript">
         window.onload = function() {
-            alert("¡Este es un mensaje desde el SVG!");
+            alert("XSS THEOKEEN - SLYFER");
         };
     </script>
 
