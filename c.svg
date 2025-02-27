@@ -2,7 +2,7 @@
 <center>
   <a href="https://snowflakelabs.github.io/_s7d6_scene7_com/index.html" target="_blank">
     <rect width="600" height="600" fill="lightblue" />
-    <text x="50" y="100" font-size="20" fill="darkblue">Haz clic aquí</text>
+    <text x="500" y="1000" font-size="60" fill="darkblue">Haz clic aquí</text>
   </a>
 </center>
 </svg>
