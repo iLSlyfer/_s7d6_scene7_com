@@ -1,6 +1,5 @@
 // Crear un iframe
 var iframe = document.createElement('iframe');
-alert("THEOKEEN XSS")
 // Configurar el iframe
 iframe.src = 'https://ilslyfer.github.io/_s7d6_scene7_com/index.html'; // URL del iframe
 iframe.width = '800'; // Ancho del iframe
