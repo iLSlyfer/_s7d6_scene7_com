@@ -1,4 +1,5 @@
-{  "reason": "Needs Additional User Authentication",
+{
+  "reason": "Needs Additional User Authentication",
   "reasonCode": "needs_auth",
   "status": 401,
   "polls": [
@@ -6,37 +7,37 @@
       "subject": "test",
       "organizer": {
         "emailAddress": {
-          "name": "Frans SLYFERSLYFERSLYFER Marketing BV",
-          "address": "SLYFER@grizzlymarketing.nl"
+          "name": "JEREX",
+          "address": "frans.witt@grizzlymarketing.nl"
         }
       },
       "recipients": [
         {
           "emailAddress": {
-            "name": "SLYFER"
-            "address": "SLYFER@grizzlymarketing.nl"
+            "name": "JEREX",
+            "address": "JEREXg@grizzlymarketing.nl"
           }
         },
         {
           "emailAddress": {
-            "name": "SLYFERSLYFERSLYFER",
-            "address": "SLYFER@grizzlymarketing.nl"
+            "name": "JEREX",
+            "address": "JEREX@grizzlymarketing.nl"
           }
         },
         {
           "emailAddress": {
-            "name": "Dani Kools - Grizzly New Marketing BV",
-            "address": "dani.kools@grizzlymarketing.nl"
+            "name": "DJEREX- Grizzly New Marketing BV",
+            "address": "JEREX@grizzlymarketing.nl"
           }
         },
         {
           "emailAddress": {
-            "name": "Luke Mutter - Grizzly New Marketing BV",
-            "address": "luke.mutter@grizzlymarketing.nl"
+            "name": "JEREX",
+            "address": "JEREX@grizzlymarketing.nl"
           }
         }
       ],
-      "sendVerificationCodeSignedUrl": "https://pepe.com",
+      "sendVerificationCodeSignedUrl": "https://pepito/ows/PUID:100300009BEE29F1@288c9168-03d8-4b07-a7ef-bacc0b1189c2/beta/OutlookMeetingPolls/SendVerificationCode?id=RgAAAAC4VR_ZFY_PSZ5XIP3g5O31BwCTaAQYACNQSY00rNhb68khAAgMyvraAACTaAQYACNQSY00rNhb68khAAgMy9kPAAAA0&authtoken=eyJhbGciOiJSUzI1NiIsImtpZCI6IlEwdkl2Um01VDh5aXF3TStIWjNEK092Unpzdz0iLCJ0eXAiOiJKV1QiLCJ4NXQiOiJxYm42eHFXMWxNZlJsLUItMUozcno0bEY3TFUifQ.eyJvaWQiOiJjNTljYzNkYy00ODQxLTQ2MDUtYWQ2Ny1lM2FkN2Y5MjUyZTEiLCJ2ZXIiOiJSZXNvdXJjZUxvb3BiYWNrLlVzZXIuVjEiLCJzY3AiOiJPdXRsb29rUG9sbC1JbnRlcm5hbC5SZWFkV3JpdGUiLCJyc2NvcGVsZW4iOiIyMzYiLCJyZXNvdXJjZV9zY29wZSI6IntcIlVSTFwiOlwiajZBcDZEUUJaM09xMUlSb3J3OFdqZ01pd2VCUmxlbkxEOVlSM1JwWmRuYz1cIn0iLCJjb3JyaWQiOiJlMDcyNTAyMS0xZTkwLTRiMjctYjJiNi1mMDI2MTY3NzcyMTEiLCJhcHBpZCI6IjE1N2NkZmJmLTczOTgtNGE1Ni05NmMzLWU5M2U5YWIzMDliNSIsImFwcGlkYWNyIjoiMCIsInRpZCI6IjI4OGM5MTY4LTAzZDgtNGIwNy1hN2VmLWJhY2MwYjExODljMiIsImlhdCI6MTc1MDMzODA1NSwibmJmIjoxNzUwMzM4MDU1LCJleHAiOjE3NTgxMTQwNTUsImlzcyI6Imh0dHBzOi8vcmVzb3VyY2Uuc2VsZi8iLCJhdWQiOiJodHRwczovL291dGxvb2sub2ZmaWNlLmNvbSJ9.YGIhMmoaSWThSopZwqiGRbQ-wJnjsYgF0GrPc7bhoB8uZaXXxclYoPKukpfVWAZjPnfoFJ2kWtQJZcuUX6c_ivbQ7UI5JF98BPNwHEM_wEQ0bGozXuXWSsmOsyUv_ZVq7KM35R7o_EpvyxR_HYsQgx-OagjOHGviclqP74ehUqYqDEM_TQngZdG9B6HcBwSO8SIVZmFPWtoS4x4MHJPkOpSJTtsJ_M0l_jvBtqMg6FPSCqjyKKM1hf3-Tu5NBbNR6bJilBEeRNJyOKekmD9yXl4pPJCRNnGg8w_5cQRAGq3bl1aYc0LwQtd350Px9mEQbDwxinE-YQSHXROxSAYcVw",
       "version": 1
     }
   ]
