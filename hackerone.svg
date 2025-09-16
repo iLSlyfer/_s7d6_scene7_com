@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60">
+  <a href="https://hackerone.com" target="_blank">
+    <rect x="0" y="0" width="200" height="60" fill="#4CAF50"/>
+    <text x="100" y="35" font-size="20" text-anchor="middle" fill="white">
+      Ir a HackerOne
+    </text>
+  </a>
+</svg>
