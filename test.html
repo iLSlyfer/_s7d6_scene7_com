@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Prueba de requests a snowflakelabs.github.io</title>
+</head>
+<body>
+  <h1>Prueba de requests a snowflakelabs.github.io</h1>
+  <p>Este HTML hace varias peticiones (fetch, imagen, script) hacia <code>snowflakelabs.github.io</code>.</p>
+
+  <button id="run">Hacer requests ahora</button>
+
+  <script>
+    document.getElementById('run').addEventListener('click', async () => {
+      try {
+        // 1) Fetch simple (GET)
+        await fetch('https://snowflakelabs.github.io/')
+          .then(r => console.log('fetch / OK', r.status))
+          .catch(e => console.warn('fetch / error', e));
+
+        // 2) Fetch a una ruta específica
+        await fetch('https://snowflakelabs.github.io/some-path')
+          .then(r => console.log('fetch /some-path OK', r.status))
+          .catch(e => console.warn('fetch /some-path error', e));
+
+        // 3) Crear una imagen que apunte al dominio (genera petición GET)
+        const img = new Image();
+        img.src = 'https://snowflakelabs.github.io/favicon.ico';
+        img.alt = 'probe';
+        img.style = 'display:none';
+        document.body.appendChild(img);
+
+        // 4) Insertar dinámicamente un script (otro tipo de request)
+        const s = document.createElement('script');
+        s.src = 'https://snowflakelabs.github.io/some-script.js';
+        s.async = true;
+        s.onerror = () => console.log('script load error (expected)');
+        document.head.appendChild(s);
+
+        // 5) Hacer una petición POST (si quieres probar otras rutas)
+        fetch('https://snowflakelabs.github.io/post-test', {
+          method: 'POST',
+          body: JSON.stringify({ test: 'scanner' }),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(r => console.log('POST done', r.status)).catch(e => console.warn('POST error', e));
+
+        console.log('Requests disparadas. Espera unos segundos para que Playwright las capture.');
+      } catch (err) {
+        console.error('Error en el click handler:', err);
+      }
+    });
+
+    // Auto-run a los 1s (opcional) - comenta si no querés autoejecución
+    setTimeout(() => document.getElementById('run').click(), 1000);
+  </script>
+</body>
+</html>
