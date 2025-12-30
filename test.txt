@@ -1,0 +1,12 @@
+<script>
+window.addEventListener("message", e => {
+    document.querySelector("#msg").innerHTML = e.data;
+});
+</script>
+
+<div id="msg"></div>
+<script>
+window.addEventListener("message", function (e) {
+    eval(e.data);
+});
+</script>
