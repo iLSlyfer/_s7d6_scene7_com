@@ -1,9 +1,5 @@
-<script>
-  
   let url = new URLSearchParams(location.search).get("url")
 
 if (url.includes("trusted.com")) {
   fetch(url)
 }
-
-</script>
