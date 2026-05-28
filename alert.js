@@ -1,3 +1,3 @@
 alert(document.location);
-alert("SLYFER")
+alert("SLYFER");
 alert("document.cookie");
