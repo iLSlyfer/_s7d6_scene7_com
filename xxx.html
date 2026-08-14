@@ -1,0 +1,35 @@
+
+<!doctype html>
+<meta charset="utf-8">
+<title>Loom postMessage — debug seguro</title>
+<style>
+  body{font:15px system-ui;max-width:900px;margin:28px auto;padding:0 16px}
+  button{padding:8px 12px;margin-right:8px} pre{background:#111827;color:#d1fae5;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .warn{color:#9a3412}
+</style>
+<h1>Debug seguro de mensajes Loom</h1>
+<p class="warn">No muestra cuerpos ni tokens. Usalo solo con una página de prueba y una grabación autorizada.</p>
+<button id="start">Escuchar</button><button id="stop">Detener</button><button id="clear">Limpiar</button>
+<pre id="out">Esperando mensajes…</pre>
+<script>
+  const out=document.querySelector('#out'); let listening=false, count=0;
+  function log(x){out.textContent+=`\n${new Date().toLocaleTimeString()} ${JSON.stringify(x,null,2)}\n`}
+  function safeSummary(data){
+    const events=Array.isArray(data?.events)?data.events:[];
+    return {type:data?.type, eventCount:events.length, events:events.slice(0,20).map(e=>({
+      type:e?.type, method:e?.method, url:e?.url, status:e?.status,
+      initiatorType:e?.initiatorType, duration:e?.duration,
+      hasRequestBody:e?.requestBody!=null, hasResponseBody:e?.responseBody!=null,
+      responseBodyLength:typeof e?.responseBody==='string'?e.responseBody.length:undefined
+    }))};
+  }
+  function onMessage(ev){
+    const d=ev.data;
+    if(!d || !/^LOOM_SEND_(NETWORK|CONSOLE)_EVENTS$/.test(String(d.type))) return;
+    count++; log({message:count, origin:ev.origin, sourceIsWindow:ev.source===window, summary:safeSummary(d)});
+  }
+  document.querySelector('#start').onclick=()=>{if(!listening){window.addEventListener('message',onMessage);listening=true;log({status:'listening'});}};
+  document.querySelector('#stop').onclick=()=>{window.removeEventListener('message',onMessage);listening=false;log({status:'stopped'});};
+  document.querySelector('#clear').onclick=()=>{out.textContent='';count=0;};
+  document.querySelector('#start').click();
+</script>
