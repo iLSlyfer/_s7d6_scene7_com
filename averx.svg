@@ -1,0 +1,11 @@
+<svg viewBox="0 0 200 50" height="50" width="200" xmlns="http://www.w3.org/2000/svg">
+
+  <a href="javascript:confirm(1)">
+    <rect fill="#4285F4" height="50" width="200" y="0" x="0"></rect>
+
+    <text font-size="20" text-anchor="middle" fill="white" y="50%" x="50%">
+      THE OKEEN POC
+    </text>
+  </a>
+
+</svg>
